@@ -1,6 +1,7 @@
 ---
-title: AIKAI 的数字空间 | Aikailaw
+title: AIKAI 的数字空间 | www.aikailaw.com
 ---
+![封面](https://raw.githubusercontent.com/DavidZhao2017/image_auto/main/obisdian/a8j9ew2uim-0-HIYIFaGxNtab3Y0l.jpg)
 
 # 欢迎来到 AIKAI 的数字花园
 
