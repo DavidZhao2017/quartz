@@ -26,11 +26,11 @@ description: AIKAI 的个人数字花园——价值投资、AI 前沿与认知�
 
 ### 🧠 投资笔记（Value & Investing）
 价值投资的理念、估值方法、个案复盘。
-> 小径尚在开辟中——敬请期待。
+- → [[investing/certainty-thinking-framework|寻找确定性：商业模式与安全边际的思考框架]]
 
 ### ⚡ 科技与 AI 观察（AI & Tech）
 前沿科技、AI、机器人的研究笔记与一线观察。
-> 小径尚在开辟中——敬请期待。
+- → [[ai/agentic-knowledge-garden|本地模型与智能体协同：从个人工作流到数字化花园]]
 
 ---
 
