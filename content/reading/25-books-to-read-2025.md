@@ -5,6 +5,8 @@ tags:
   - 读书
   - 个人成长
   - clippings
+  - reading
+  - sprout
 description: "25 Books I'm eager to read in 2025. Books on health, entrepreneurship, finance, psychology, creativity, self-development, technology, memoirs, fiction and writing."
 ---
 
