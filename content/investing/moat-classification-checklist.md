@@ -46,3 +46,4 @@ description: 用无形资产、转换成本、网络效应、成本优势四类�
 
 *种子（seedling）笔记，作为判断壁垒的第一道筛子，与价值投资的方法论主干互为参照：*
 *→ [[certainty-thinking-framework|寻找确定性：商业模式与安全边际的思考框架]]*
+*跨区延伸（AI 演进对这套壁垒的审视）：→ [[thoughts/ai-and-moat-evolution|技术演进与护城河：AI 时代对传统商业壁垒的重塑]]*

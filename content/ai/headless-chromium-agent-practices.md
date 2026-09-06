@@ -54,3 +54,4 @@ description: Linux 容器里跑 headless Chromium 供 Agent 驱动的实践：no
 
 *实践笔记，种子（seedling）状态，来自 AIKAI 运行 Agent + headless 浏览的真实工程踩坑。*
 *这篇与更高层的方法论互为印证：→ [[agentic-knowledge-garden|本地模型与智能体协同：从个人工作流到数字化花园]]*
+*工程学如何翻译成壁垒经济学：→ [[thoughts/ai-and-moat-evolution|技术演进与护城河：AI 时代对传统商业壁垒的重塑]]*

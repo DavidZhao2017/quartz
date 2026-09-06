@@ -66,3 +66,4 @@ description: 价值投资视角下，如何用商业模式本质、自由现金�
 
 *这是一篇处于萌芽（sprout）状态的基石笔记，会随我的 [[reading/25-books-to-read-2025|阅读]] 与复盘持续更新。*
 *相关的思维实验，见 [[ai/agentic-knowledge-garden|本地模型与智能体协同]]。*
+*该框架在 AI 演进下的重新审视：→ [[thoughts/ai-and-moat-evolution|技术演进与护城河：AI 时代对传统商业壁垒的重塑]]*

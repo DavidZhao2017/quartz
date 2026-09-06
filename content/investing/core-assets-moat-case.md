@@ -78,3 +78,4 @@ description: 抓取雪球 SH600519 公开讨论中的多空交锋，用护城河
 *种子（seedling）实战笔记，正文基于真实外部情报（雪球 SH600519，抓取于 2026-09-07）。*
 *方法骨架：→ [[moat-classification-checklist|巴菲特护城河的四种分类与检验清单]]*
 *确定性主干：→ [[certainty-thinking-framework|寻找确定性：商业模式与安全边际]]*
+*跨区参照（壁垒在面对 AI 演进时的共性）：→ [[thoughts/ai-and-moat-evolution|技术演进与护城河]]*

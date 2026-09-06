@@ -54,3 +54,4 @@ description: 关于本地推理模型与自动化智能体如何协同，重构"
 
 *实践笔记，萌芽（sprout）状态，会随工作流的演进而迭代。*
 *方法论层面的估值与确定性思考，见 [[investing/certainty-thinking-framework|商业模式的确定性]]。*
+*这套工作流的护城河含义：→ [[thoughts/ai-and-moat-evolution|技术演进与护城河：AI 时代对传统商业壁垒的重塑]]*
