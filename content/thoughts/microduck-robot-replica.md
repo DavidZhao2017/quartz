@@ -27,29 +27,17 @@ description: 把帆哥那期 MicroDuck 保姆级教程从头到尾复刻了一�
   allowfullscreen
 ></iframe>
 
-<p class="video-caption">* 视频由 YouTube 提供嵌入支持，如遇加载空白请开启网络代理。</p>
-
 <details class="video-fallback">
-  <summary>本地封面 & 原作者信息（备用）</summary>
+  <summary>本地封面 & 原作者信息</summary>
   <a href="https://www.youtube.com/watch?v=Vep8AjoCnEM" target="_blank" rel="noopener" class="video-card">
     <img src="./static/images/microduck-thumbnail.jpg" alt="手搓 microduck 保姆级完整教程" class="video-card__thumb" loading="lazy" />
     <div class="video-card__body">
       <div class="video-card__title">手搓 microduck 保姆级完整教程！一步一步带你从零开始做鸭，小白也能复刻！</div>
       <div class="video-card__author">AI-Fan AI 研究室 · 帆哥 (@AARG_FAN)</div>
-      <span class="video-card__cta">📹 教程原片直达 ↗</span>
+      <span class="video-card__cta">📹 原片直达 ↗</span>
     </div>
   </a>
 </details>
-
-> 📌 **国内访客**: B 站暂未找到该视频的原版搬运, 下方"延伸阅读"列了几条**同主题**的 B 站教程 (OpenDuckMini 项目复刻 / 帆哥本人 B 站主页), 可作为国内访问替代。
-
-**相关 B 站资源**:
-
-- 📺 [AI研究室-帆哥 B 站主页](https://space.bilibili.com/3546380273493405) — 帆哥其他 AI 教程 (帆哥 B 站主页 ID 来自其 YouTube 简介 cross-link, 如有出入以其主页为准)
-- 📺 [【Open Duck Mini】从零开始到强化策略 — 机器人的开发全流程](https://www.bilibili.com/video/BV1LPCwB6EBc/) — 小圆脸宝宝, 同主题硬件到 RL 全流程拆解
-- 📺 [Microduck 硬件架构拆解](https://www.bilibili.com/video/BV1R2tH6tEsK/) — Z-Rob, 用 XL330 复刻的行走测试
-- 📺 [无需高端显卡, 教你训练一只 Microduck](https://www.bilibili.com/video/BV1tvtE6uEgF/) — 矽递科技, SeeedStudio 出品的训练教程
-- 📺 [OpenDuckMini 快速入门教程](https://www.ncnynl.com/archives/202506/6757.html) — 创客智造, 配套舵机配置 + 行走测试教程合集
 
 ---
 
@@ -223,4 +211,4 @@ ros2 topic echo /microduck/joint_states --one-shot
 
 ---
 
-> 本文基于 **AI-Fan AI 研究室 · 帆哥** 的视频教程整理, 原视频见: <https://www.youtube.com/watch?v=Vep8AjoCnEM>, 仅供个人学习折腾记录。
+> 本文基于 **AI-Fan AI 研究室 · 帆哥** 的视频教程整理, 原片地址: <https://www.youtube.com/watch?v=Vep8AjoCnEM>, 仅供个人学习折腾记录。
