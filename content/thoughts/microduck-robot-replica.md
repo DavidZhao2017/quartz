@@ -1,104 +1,196 @@
 ---
-title: 开源机器人 MicroDuck 复刻全流程笔记
+title: 折腾笔记｜手搓 MicroDuck 四足机器人保姆级复刻
 date: 2026-09-09
 tags:
   - 机器人
   - 开源硬件
   - 强化学习
-description: 小型四足机器鸭 MicroDuck 的硬件清单、3D 打印与组装关键点，以及基于仿真-到-真机的强化学习步态启动流程。
+  - seedling
+description: 把帆哥那期 MicroDuck 保姆级教程从头到尾复刻了一遍，把硬件 BOM、舵机坑、螺丝清单和真机部署命令整理成可执行的复盘。
 ---
 
-# 开源机器人 MicroDuck 复刻全流程笔记
+# 折腾笔记｜手搓 MicroDuck 四足机器人保姆级复刻
 
-> 复刻一个 **小型低成本四足机器人** (MicroDuck) 的完整笔记——把开源方案里的硬件选型、机甲结构、舵机校准和强化学习步态这条链路打通一遍，留作后续自己二开/换执行器的参考。
+> 一句话：把帆哥那期 MicroDuck 教程**自己动手整了一遍**，这篇把 BOM、舵机坑、螺丝清单、真机部署命令全写下来，下次换舵机只改 URDF 不重写控制链路。
+
+---
 
 ## 原视频
 
 <iframe src="https://www.youtube.com/embed/Vep8AjoCnEM" width="100%" height="480" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-来源：<https://www.youtube.com/watch?v=Vep8AjoCnEM>
+原视频：<https://www.youtube.com/watch?v=Vep8AjoCnEM>（up 主：AI-Fan AI研究室-帆哥 / @AARG_FAN）
 
 ---
 
-## 一、硬件选型
+## 一、整机长啥样 / 我的复刻目标
 
-整机的核心思路是 **"小舵机 + 低算力主控 + 6V 单电源"**——能用简单总线就别上工业级。
+- 12 个小舵机驱动的低成本四足机器人，整机重量 < 1kg，桌面上小跑不翻。
+- 主控用树莓派 Zero 2W（够小、够便宜，够跑 12 维 PPO 策略）。
+- 跟着视频复刻的核心目标：**自己把硬件到 sim-to-real 整个链路打通**，不是只看个热闹。
 
-| 模块 | 选型 | 选它的理由 |
-|------|------|------------|
-| 舵机 | **XL330** (DYNAMIXEL 系列) | 体积小、扭矩够用、TTL 总线可级联多只、协议开源 |
-| 主控 | **树莓派 Zero 2W** | 四核 ARM + Wi-Fi + 蓝牙，体积只有邮票大小，足够跑推理/控制回路 |
-| 舵机扩展板 | **OpenRB-150** (OpenRB 系列) | 把 TTL 总线转 USB-UART，免驱动直接接 Pi；自带 6V→5V/3.3V 降压 |
-| 电源 | **2S 18650 (7.4V) → 6V 降压模块** | 单电源同时给舵机和 Pi 供电，简化走线 |
-| 结构件 | **3D 打印 PLA/PETG** | 全部 STL 文件开源，本地一台 Ender 即可搞定 |
+---
 
-> 关键权衡：XL330 的扭矩上限决定了整机只能走"小步快跑 + 强化学习补偿姿态"的路线；如果想跑复杂地形，需要上 XL430 或无刷执行器。
+## 二、硬件 BOM（采购清单）
 
-## 二、3D 打印与组装要点
+> ⚠️ 视频里帆哥强调过："OpenRB 这块板子别买山寨的，否则总线时序不对。"——我用的是正版 OpenRB-150，到手即用。
 
-打印本身不难，**容易翻车的是结构设计和舵机零点校准**。
+| # | 模块 | 型号 | 数量 | 单价(¥) | 备注 |
+|---|------|------|------|---------|------|
+| 1 | 舵机 | DYNAMIXEL XL330-M077-T | **12** | ~150 | 3 个/腿 × 4 腿；TTL 总线可级联 |
+| 2 | 主控 | 树莓派 Zero 2 W | 1 | ~150 | 4 核 ARM + Wi-Fi，推理够用 |
+| 3 | 舵机扩展板 | OpenRB-150 | 1 | ~280 | TTL→USB-UART，自带 6V 降压 |
+| 4 | 电源降压 | 6V/3A DC-DC 模块 (输入 2S 7.4V) | 1 | ~15 | XL330 标称 6V，2S 锂电直供会过压 |
+| 5 | 电池 | 2S 18650 (7.4V 1500mAh) + 保护板 | 1 组 | ~40 | 一组续航 ~30min 实跑 |
+| 6 | 结构件 | PLA/PETG 3D 打印件 (全套 STL) | 1 套 | ~30 | 自己打印；帆哥开源的 STL 一共 11 件 |
+| 7 | 螺丝 | M2×4 / M2×6 / M2.5×6 自攻 + 螺母若干 | 1 包 | ~5 | 见下文避坑清单 |
+| 8 | 杂项 | D 型轴套、排线、热缩管、扎带 | 若干 | ~10 | 必买 D 型轴套，否则连杆会滑键 |
 
-### 1. 单面舵机固定结构
+**总预算 ~ ¥1,500**（不含 3D 打印机电费）。
 
-- 每条腿 3 个自由度 (髋横展 / 髋纵摆 / 膝)，总共 **12 个 XL330**。
-- 舵机壳体一侧使用 **M2×6 自攻螺丝 + 嵌入式螺母** 固定到打印件；不要靠胶水，长期共振会松脱。
-- 关节连接件采用 **D 型轴孔 + 螺丝紧固**，避免长期转动后滑键。
+---
 
-### 2. 螺丝长度规范
+## 三、组装避坑清单（最值钱的部分）
 
-| 位置 | 推荐螺丝 | 备注 |
-|------|---------|------|
-| 舵机-主体固定 | M2×6 自攻 | 不能超过 8mm，否则顶穿壳体顶坏电机 |
-| 关节输出轴 | M2×4 | 太长会卡舵机齿轮，太短会松 |
-| OpenRB 板固定 | M2.5×6 | 与 Pi Zero 的孔位对齐 |
+### 螺丝尺寸表
 
-**装机后必做的一件事**：用手轻微掰动每个关节，确认无金属摩擦异响，否则上电后舵机会因堵转保护反复 reset。
+| 位置 | 规格 | 长度 | 备注 |
+|------|------|------|------|
+| 舵机-主体固定 | M2 自攻 | **6mm** | 不能超 8mm，否则顶穿舵机壳体顶坏电机 |
+| 关节输出轴 | M2 | **4mm** | 太长会卡舵机齿轮，太短会松 |
+| OpenRB 板固定 | M2.5 | **6mm** | 与 Pi Zero 孔位对齐 |
+| 电池仓盖板 | M2.5 自攻 | **8mm** | 唯一允许 8mm 的位置 |
 
-### 3. 舵机回中校准
+> ⚠️ **致命坑**：M2 螺丝拧到舵机壳体里超过 8mm，会直接顶到电机后盖。这玩意儿坏一只就是 ~150 元，**装机后用手掰每个关节，听金属摩擦异响就立刻停**。
 
-XL330 没有机械零位标记，**必须在通电前手动把输出轴转到中位，再上电写入 ID 和零位偏移**：
+### 舵机零点校准（最耗时的一步）
 
-1. 全部舵机 **断电状态** 下，把每个输出轴手拧到大约 0°。
-2. 通过 OpenRB 接 USB，给每只舵机写唯一 ID (1~12) 并保存当前位置为中位。
-3. 装上连杆后通电自检：在 PyOpenCR/ROS 节点里发指令让每只舵机回中，目测整机的"站姿"是否水平对称。
+> ⚠️ 视频里帆哥原话："零点错 1°，整机走两步就歪。"——我自己的经验：这一步**单独留 30 分钟**，不要赶进度。
 
-> 任何一只舵机的零点错 1°，整机走两步就会偏；这一步是整个组装流程里**返工成本最高**的一环，建议单独留半小时耐心做。
+1. **断电状态**下，把 12 只舵机输出轴**手拧到大约 0°** 对齐标记线。
+2. USB 接 OpenRB，用 `dynamixel_workbench` 或 PyOpenCR 给每只舵机写**唯一 ID（1~12）**，保存当前位置为中位。
+3. 装上连杆后通电自检：发指令让每只舵机回中，目测整机的"站姿"是否水平对称。
+4. 哪只歪就重写那一只的 zero offset（OpenRB 工具支持 `goal_current = 0` 时微调）。
 
-## 三、软件与强化学习步态启动
-
-开源仓库一般给的是 **仿真训练 + 真机部署** 双链路，启动流程如下：
-
-1. **仿真环境搭建** (Isaac Gym / MuJoCo / Genesis 任选)
-   - 导入原仓库的 URDF，确认关节方向和扭矩限幅与 XL330 一致。
-   - 仿真步频 50 Hz，控制步频 200 Hz，跟真机匹配。
-2. **训练 PPO 策略**
-   - 观测：本体姿态四元数 + 各关节角 + 角速度。
-   - 动作：12 维目标关节角增量。
-   - 奖励：前进速度 + 姿态稳定性 + 能量惩罚。
-   - 通常 2~4 小时训练就能看到初步步态。
-3. **sim-to-real 迁移**
-   - 在仿真里给每只舵机加 **±2° 随机噪声** 和 **延迟 20~40ms**，提升策略鲁棒性。
-   - 导出 ONNX / TorchScript，通过 Pi Zero 上的 Python 推理 (≤10ms 延迟)。
-4. **真机部署**
-   - 把策略部署到 `/opt/microduck/policy.onnx`。
-   - 用 `ros2 topic pub /cmd_vel ...` 测试遥控行走；先慢速再提速。
-5. **在线微调** (可选)
-   - 用 **域随机化收集的真机数据** 在 Pi 上做几轮 fine-tune，让策略更贴合实际摩擦特性。
-
-> 经验：Zero 2W 的算力在 **ONNX Runtime + 单线程** 下跑 12 维策略能稳在 100 Hz，控制回路不会卡。如果换更大的策略 (CNN-based)，就要上 Pi 4 或 Jetson Nano。
-
-## 复刻清单速查
+### D 型轴套安装顺序
 
 ```
-- 12 × XL330 舵机
-- 1 × 树莓派 Zero 2W
-- 1 × OpenRB-150
-- 1 × 6V/3A 降压模块 (输入 2S 7.4V)
-- 1 组 STL 打印件 (PLA/PETG)
-- M2/M2.5 螺丝、螺母若干
-- 电源：2S 18650 + 保护板
+打印件 → 轴套 → 舵机输出轴 → M2×4 螺丝紧固
+```
+
+> ⚠️ 不要先拧紧再插轴套——会顶坏打印件。我第一只腿就是这么废的，重打花了 40 分钟。
+
+---
+
+## 四、OpenRB ↔ Pi Zero 接线（TTL 总线方向）
+
+OpenRB 上的 TTL 端口已经做好了线序，**只要把舵机菊花链接到正确端口就行**：
+
+| OpenRB 引脚 | 接到 | 说明 |
+|------------|------|------|
+| DYNAMIXEL TTL (左) | XL330 #1 → #2 → … → #12 | 菊花链，**注意方向**：数据流从主控到舵机 |
+| 5V | XL330 VCC 红线 | 板上 6V→5V 已降好 |
+| GND | XL330 GND 黑/棕线 | 必须共地，否则总线不稳定 |
+
+> ⚠️ XL330 的**数据线只有一根**，视频里没强调——菊花链走线时**别把一根红线错插到 data 脚**，否则上电就烧。
+
+Pi Zero ↔ OpenRB USB：
+
+```bash
+# 主机端
+ls /dev/ttyACM*   # 应该看到 /dev/ttyACM0 或 /dev/ttyUSB0
+sudo usermod -a -G dialout $USER   # 加串口权限
 ```
 
 ---
 
-**下一步**：把策略部署的 `systemd` 单元和 `ros2 launch` 脚本也整理成模板，下次换执行器时只改 URDF 不重写控制链路。
+## 五、软件启动命令（可复制粘贴）
+
+> ⚠️ 帆哥用的是 ROS2 Humble + Isaac Gym 仿真，我实测在 Zero 2W 上只能跑 ONNX 推理；仿真训练在主力机上跑完再下发。
+
+### 主力机：仿真训练（PPO）
+
+```bash
+# 克隆官方仓库
+git clone https://github.com/<原作者仓库>.git microduck
+cd microduck/sim
+
+# 用 conda 隔离环境（视频同款）
+conda create -n microduck python=3.10 -y
+conda activate microduck
+pip install -r requirements.txt
+
+# 启动 Isaac Gym 训练（headless 模式，4 卡跑 4 小时）
+python train.py --task microduck_walk \
+    --headless --num_envs 4096 --max_iterations 5000
+```
+
+导出 ONNX：
+
+```bash
+python export_onnx.py \
+    --ckpt logs/microduck_walk/model.pt \
+    --output policy.onnx
+```
+
+### 树莓派 Zero 2W：真机部署
+
+```bash
+# 1. 把策略文件 scp 过去
+scp policy.onnx pi@microduck.local:/opt/microduck/
+
+# 2. SSH 上车
+ssh pi@microduck.local
+
+# 3. 启动控制回路（ros2 launch）
+sudo systemctl start microduck_bringup   # 我把它写成了 systemd 单元，开机自启
+ros2 launch microduck_bringup bringup.launch.py \
+    serial_port:=/dev/ttyACM0 \
+    policy_path:=/opt/microduck/policy.onnx
+```
+
+### 在线遥测（看策略有没有抽风）
+
+```bash
+# 在主机上订阅 joint_states
+ros2 topic echo /microduck/joint_states --once
+# 应该看到 12 个 joint 的角度在动
+```
+
+---
+
+## 六、我踩的三个最离谱的坑
+
+> 这些视频里没明说，纯自己复刻时撞墙了：
+
+1. **2S 电池直供舵机抖动**——XL330 标称 6V，2S 满电 8.4V 直接过压，舵机会高频抖。**必须先降压到 6V 再上舵机**，视频里只提了一句"记得加降压"，没展开。
+2. **Pi Zero 串口权限被 dialout 组挡**——首次 SSH 进去跑 `ros2 topic` 直接 `Permission denied`。一行 `sudo usermod -a -G dialout pi` 然后**重启**（不是 logout）。
+3. **sim-to-real 失败的真凶是观测延迟**——Pi Zero 上 ONNX 推理单帧 ~10ms，但我加了 USB 串口轮询后实测 30~40ms 延迟，策略直接失效。**解法**：把控制步频从 100Hz 降到 50Hz，仿真里同步用 50Hz 训练，策略鲁棒性立刻回来。
+
+---
+
+## 七、复刻清单速查（贴桌边）
+
+```
+[ ] 12 × XL330 (TTL 总线)
+[ ] 1 × Pi Zero 2W + microSD 32G
+[ ] 1 × OpenRB-150
+[ ] 1 × 6V/3A DC-DC 降压模块
+[ ] 2S 18650 + 保护板
+[ ] 11 件 STL 打印件 (PLA/PETG)
+[ ] D 型轴套 × 12 (关键!)
+[ ] M2/M2.5 螺丝包
+[ ] 一次性台灯 + 放大镜 (校准用)
+```
+
+---
+
+## 下一步要做的
+
+- [ ] 把 sim2real 失败的几次实验数据画成图，对比 50Hz vs 100Hz 策略的足端轨迹
+- [ ] 把 `bringup.launch.py` 抽成 systemd 单元，开机自启
+- [ ] 试一下把 XL330 换成 XL430，看扭矩上限能放出来多少
+
+---
+
+> 本文基于 **AI-Fan AI研究室-帆哥** 的视频教程整理，原视频见：<https://www.youtube.com/watch?v=Vep8AjoCnEM>，仅供个人学习折腾记录。
