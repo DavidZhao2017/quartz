@@ -1,6 +1,6 @@
 ---
 title: 'Hermes Agent 自动化验证'
-date: '2026-09-07'
+date: '2026-09-08'
 tags: ['AI', 'Quartz']
 ---
 
