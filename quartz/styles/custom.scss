@@ -2,11 +2,13 @@
 
 // put your custom CSS here!
 
-// === 视频双轨播放器 (B站主源 + YouTube 备用) ===
+// ============================================================================
+// 视频双轨播放器 (B站主源 + YouTube 备用)
+// ============================================================================
 .video-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;          // 强制 16:9 自适应
+  aspect-ratio: 16 / 9;            // 强制 16:9 自适应
   margin: 1.5rem 0;
   background: #000;
   border-radius: 8px;
@@ -37,21 +39,27 @@
   }
 }
 
-// === 视频封面预览卡片 (无 B 站镜像时使用) ===
+// ============================================================================
+// 视频封面预览卡片 (极简极客风 — 去平台标签, 只留标题/作者/低调 CTA)
+// ============================================================================
 .video-card {
   display: block;
   margin: 1.5rem 0;
-  border-radius: 10px;
+  // 细边框磨砂质感 — 暗色模式下边框会自动用主题色 (通过变量驱动)
+  border: 1px solid var(--lightgray, #e5e5e5);
+  border-radius: 8px;
   overflow: hidden;
-  background: var(--light, #fff);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  background: color-mix(in srgb, var(--light, #fff) 92%, transparent);  // 轻微磨砂
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: var(--secondary, #284b63);
+    background: var(--light, #fff);
+    transform: translateY(-1px);
   }
 
   &__thumb {
@@ -59,35 +67,144 @@
     aspect-ratio: 16 / 9;
     object-fit: cover;
     display: block;
+    // 极简风不需要圆角, 与卡片边缘对齐
+    border-radius: 0;
+    margin: 0;
   }
 
   &__body {
     padding: 0.875rem 1.125rem;
   }
 
-  &__platform {
-    font-size: 0.8rem;
-    color: #ff0000;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-
   &__title {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
     line-height: 1.4;
+    color: var(--dark, #2b2b2b);
   }
 
   &__author {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--darkgray, #666);
     margin-bottom: 0.5rem;
   }
 
   &__cta {
-    font-size: 0.85rem;
+    display: inline-block;
+    font-size: 0.8rem;
     color: var(--secondary, #284b63);
     font-weight: 500;
+    opacity: 0.85;
+
+    .video-card:hover & { opacity: 1; }
+  }
+}
+
+// ============================================================================
+// 侧边栏断点调整: 桌面常驻阈值从 800px 提升到 1024px
+// <1024px 时: 左/右 sidebar 全部收起, 仅保留顶部工具栏 (汉堡包 + 搜索/暗色等),
+//             主屏幕彻底还给正文
+// ============================================================================
+@media (max-width: 1023px) {
+  // 把 quartz-body 改为单列堆叠 (等同 mobile 单列布局)
+  .page > #quartz-body {
+    grid-template-columns: auto !important;
+    grid-template-rows: auto auto auto auto auto !important;
+    grid-template-areas:
+      "grid-sidebar-left"
+      "grid-header"
+      "grid-center"
+      "grid-sidebar-right"
+      "grid-footer" !important;
+    column-gap: 5px;
+    row-gap: 5px;
+  }
+
+  // 左侧 sidebar: 压成顶部横向工具栏
+  .page > #quartz-body .sidebar.left {
+    position: initial !important;
+    height: unset !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 2rem 0 0 0 !important;
+    width: 100% !important;
+  }
+
+  // 右侧 sidebar: 压成底部横向堆叠 (TOC 默认隐藏, 沿用 base 的 tablet 行为)
+  .page > #quartz-body .sidebar.right {
+    position: initial !important;
+    height: unset !important;
+    width: 100% !important;
+    flex-direction: row !important;
+    padding: 0 !important;
+    margin-left: inherit !important;
+    margin-right: inherit !important;
+
+    & > * {
+      flex: 1;
+      max-height: 24rem;
+    }
+    & > .toc { display: none; }
+  }
+
+  // Explorer 抽屉切换: 汉堡包可见, 折叠箭头隐藏
+  .explorer {
+    height: initial !important;
+    flex-shrink: 0 !important;
+    order: -1 !important;
+    align-self: flex-start !important;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+    overflow: hidden !important;
+  }
+
+  .explorer button.mobile-explorer {
+    display: flex !important;
+  }
+  .explorer button.desktop-explorer {
+    display: none !important;
+  }
+
+  // Explorer 默认收成 34px 抽屉 (点击 mobile-explorer 后切到 .collapsed 移除再展开)
+  .explorer.collapsed,
+  .explorer:not(.collapsed) {
+    flex: 0 0 34px !important;
+  }
+
+  // Explorer 抽屉滑出动画 (与 mobile 模式一致)
+  .page > #quartz-body > :not(.sidebar.left:has(.explorer)) {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  // 主内容满宽
+  .page > #quartz-body .center,
+  .page > #quartz-body footer {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  // 减少页面水平内边距, 给正文最大空间
+  .page > #quartz-body {
+    padding: 0 1rem !important;
+  }
+}
+
+// ============================================================================
+// Explorer 在桌面端: 即使宽屏下也只占固定小比例, 允许点击按钮完全收拢
+// (覆盖 base 默认的 flex: 1 auto, 让 explorer 在桌面侧只占需要的最小宽度)
+// ============================================================================
+@media (min-width: 1024px) {
+  .sidebar.left .explorer {
+    // 不强占满, 允许内容自然收缩
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  // 桌面端的 desktop-explorer 折叠按钮永远可见, 点击后 explorer 整体收成窄条
+  .sidebar.left .explorer.collapsed {
+    flex: 0 0 auto;
+    overflow: hidden;
   }
 }

@@ -18,12 +18,11 @@ description: 把帆哥那期 MicroDuck 保姆级教程从头到尾复刻了一�
 ## 原视频
 
 <a href="https://www.youtube.com/watch?v=Vep8AjoCnEM" target="_blank" rel="noopener" class="video-card">
-  <img src="https://i.ytimg.com/vi/Vep8AjoCnEM/hqdefault.jpg" alt="手搓 microduck 保姆级完整教程" class="video-card__thumb" loading="lazy" />
+  <img src="./static/images/microduck-thumbnail.jpg" alt="手搓 microduck 保姆级完整教程" class="video-card__thumb" loading="lazy" />
   <div class="video-card__body">
-    <div class="video-card__platform">▶ YouTube (海外原版)</div>
     <div class="video-card__title">手搓 microduck 保姆级完整教程！一步一步带你从零开始做鸭，小白也能复刻！</div>
     <div class="video-card__author">AI-Fan AI 研究室 · 帆哥 (@AARG_FAN)</div>
-    <div class="video-card__cta">点击跳转观看 →</div>
+    <span class="video-card__cta">📹 教程原片直达 ↗</span>
   </div>
 </a>
 
