@@ -39,6 +39,17 @@ description: 把帆哥那期 MicroDuck 保姆级教程从头到尾复刻了一�
   </a>
 </details>
 
+<details class="resource-links">
+  <summary>▶ 相关资源链接</summary>
+
+- 🔗 [AI研究室-帆哥 个人主页](https://space.bilibili.com/3546380273493405) — 帆哥其他 AI 教程合集
+- 🔗 [Open Duck Mini 开发与强化学习全流程](https://www.bilibili.com/video/BV1LPCwB6EBc/) — 小圆脸宝宝, 同主题硬件到 RL 全流程拆解
+- 🔗 [Microduck 硬件架构拆解](https://www.bilibili.com/video/BV1R2tH6tEsK/) — Z-Rob, XL330 复刻的行走测试
+- 🔗 [无需高端显卡训练 Microduck](https://www.bilibili.com/video/BV1tvtE6uEgF/) — 矽递科技 (SeeedStudio) 出品的训练教程
+- 🔗 [OpenDuckMini 舵机配置与行走测试合集](https://www.ncnynl.com/archives/202506/6757.html) — 创客智造, 配套硬件调参与实机教程
+
+</details>
+
 ---
 
 ## 一、整机长啥样 / 我的复刻目标
