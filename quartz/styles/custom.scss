@@ -40,6 +40,53 @@
 }
 
 // ============================================================================
+// 视频模块: 内嵌播放器 (就地播放) + 极简灰字提示 + 折叠备用卡片
+// ============================================================================
+.video-embed {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: none;
+  border-radius: 8px;
+  margin: 1.5rem 0 0.5rem 0;
+  background: var(--lightgray, #e5e5e5);  // 占位色, 国内未代理时显示空灰框
+}
+
+.video-caption {
+  margin: 0 0 1rem 0;
+  font-size: 0.8rem;
+  color: var(--darkgray, #888);
+  font-style: italic;
+  opacity: 0.85;
+}
+
+// 折叠块: 国内未挂梯或 iframe 加载失败时, 用户可手动展开查看封面与跳转链接
+.video-fallback {
+  margin: 0.5rem 0 1.5rem 0;
+  border: 1px dashed var(--lightgray, #e5e5e5);
+  border-radius: 6px;
+  padding: 0.25rem 0.75rem;
+  background: color-mix(in srgb, var(--light, #fff) 96%, transparent);
+
+  & > summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--darkgray, #666);
+    padding: 0.4rem 0;
+    user-select: none;
+    list-style: revert;
+
+    &:hover { color: var(--secondary, #284b63); }
+  }
+
+  // 折叠块内的跳转卡片: 复用原 .video-card 样式, 但去掉 hover 上浮避免抖动
+  & .video-card {
+    margin: 0.5rem 0;
+    &:hover { transform: none; }
+  }
+}
+
+// ============================================================================
 // 视频封面预览卡片 (极简极客风 — 去平台标签, 只留标题/作者/低调 CTA)
 // ============================================================================
 .video-card {

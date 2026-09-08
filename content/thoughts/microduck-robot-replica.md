@@ -17,14 +17,29 @@ description: 把帆哥那期 MicroDuck 保姆级教程从头到尾复刻了一�
 
 ## 原视频
 
-<a href="https://www.youtube.com/watch?v=Vep8AjoCnEM" target="_blank" rel="noopener" class="video-card">
-  <img src="./static/images/microduck-thumbnail.jpg" alt="手搓 microduck 保姆级完整教程" class="video-card__thumb" loading="lazy" />
-  <div class="video-card__body">
-    <div class="video-card__title">手搓 microduck 保姆级完整教程！一步一步带你从零开始做鸭，小白也能复刻！</div>
-    <div class="video-card__author">AI-Fan AI 研究室 · 帆哥 (@AARG_FAN)</div>
-    <span class="video-card__cta">📹 教程原片直达 ↗</span>
-  </div>
-</a>
+<iframe
+  class="video-embed"
+  src="https://www.youtube-nocookie.com/embed/Vep8AjoCnEM"
+  title="手搓 microduck 保姆级完整教程 — AI-Fan AI 研究室 · 帆哥"
+  loading="lazy"
+  referrerpolicy="strict-origin-when-cross-origin"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowfullscreen
+></iframe>
+
+<p class="video-caption">* 视频由 YouTube 提供嵌入支持，如遇加载空白请开启网络代理。</p>
+
+<details class="video-fallback">
+  <summary>本地封面 & 原作者信息（备用）</summary>
+  <a href="https://www.youtube.com/watch?v=Vep8AjoCnEM" target="_blank" rel="noopener" class="video-card">
+    <img src="./static/images/microduck-thumbnail.jpg" alt="手搓 microduck 保姆级完整教程" class="video-card__thumb" loading="lazy" />
+    <div class="video-card__body">
+      <div class="video-card__title">手搓 microduck 保姆级完整教程！一步一步带你从零开始做鸭，小白也能复刻！</div>
+      <div class="video-card__author">AI-Fan AI 研究室 · 帆哥 (@AARG_FAN)</div>
+      <span class="video-card__cta">📹 教程原片直达 ↗</span>
+    </div>
+  </a>
+</details>
 
 > 📌 **国内访客**: B 站暂未找到该视频的原版搬运, 下方"延伸阅读"列了几条**同主题**的 B 站教程 (OpenDuckMini 项目复刻 / 帆哥本人 B 站主页), 可作为国内访问替代。
 
