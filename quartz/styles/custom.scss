@@ -1,3 +1,93 @@
 @use "./variables.scss" as *;
 
 // put your custom CSS here!
+
+// === 视频双轨播放器 (B站主源 + YouTube 备用) ===
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;          // 强制 16:9 自适应
+  margin: 1.5rem 0;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+
+  &__iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  &__fallback {
+    margin-top: 0.75rem;
+    background: var(--lightgray, #f5f5f5);
+    border-radius: 6px;
+    padding: 0.5rem 0.875rem;
+
+    summary {
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--darkgray, #4e4e4e);
+      user-select: none;
+
+      &:hover { color: var(--secondary, #284b63); }
+    }
+  }
+}
+
+// === 视频封面预览卡片 (无 B 站镜像时使用) ===
+.video-card {
+  display: block;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--light, #fff);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  &__thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__body {
+    padding: 0.875rem 1.125rem;
+  }
+
+  &__platform {
+    font-size: 0.8rem;
+    color: #ff0000;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+  }
+
+  &__author {
+    font-size: 0.85rem;
+    color: var(--darkgray, #666);
+    margin-bottom: 0.5rem;
+  }
+
+  &__cta {
+    font-size: 0.85rem;
+    color: var(--secondary, #284b63);
+    font-weight: 500;
+  }
+}
