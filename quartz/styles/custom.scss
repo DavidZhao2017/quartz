@@ -451,15 +451,16 @@ ul.section-ul {
 // 适用: 首页大图(手绘/插画) + 站点定位
 .site-banner--cover {
   align-items: center;
-  gap: 1.75rem;
-  padding: 1.5rem;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;        // 整体减高: 1.5rem → 1rem (padding 减 1/3)
 
   .site-banner__cover {
-    flex: 0 0 240px;
-    width: 240px;
-    height: 240px;
+    flex: 0 0 180px;           // 减高: 240px → 180px (-25%)
+    width: 180px;
+    height: 180px;             // 1:1 容器减 1/4 (240 → 180)
     object-fit: cover;
-    border-radius: 16px;
+    object-position: top center; // 露出原图顶部 = 狗脸
+    border-radius: 14px;
     display: block;
     box-shadow: 0 4px 16px color-mix(in srgb, var(--secondary, #284b63) 14%, transparent);
   }
@@ -472,8 +473,8 @@ ul.section-ul {
     flex-direction: column;
     text-align: center;
     .site-banner__cover {
-      width: 200px; height: 200px;
-      flex-basis: 200px;
+      width: 160px; height: 160px;
+      flex-basis: 160px;
     }
   }
 }
