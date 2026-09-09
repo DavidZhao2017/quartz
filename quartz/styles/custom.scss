@@ -255,3 +255,363 @@
     overflow: hidden;
   }
 }
+
+// ============================================================================
+// 0. 覆盖 @quartz-community/folder-page + tag-page 内置列表样式
+//    (它们自带 PageList 副本, 优先级高于 quartz/components/PageList.tsx)
+//    用更高特异性的选择器重做卡片流 + 注入 banner + 暗色模式
+// ============================================================================
+ul.section-ul {
+  margin-top: 1rem !important;
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  li.section-li {
+    list-style: none;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    > .section {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch !important;
+      grid-template-columns: none !important;          // 覆盖 grid 三栏
+      gap: 1.25rem !important;
+      padding: 1rem !important;
+      background: var(--light, #ffffff);
+      border: 1px solid color-mix(in srgb, var(--darkgray, #4e4e4e) 8%, transparent);
+      border-radius: 12px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px color-mix(in srgb, var(--secondary, #284b63) 10%, transparent);
+        border-color: color-mix(in srgb, var(--secondary, #284b63) 25%, transparent);
+      }
+
+      // 左侧封面 (现版本无图, 但保留位给未来 frontmatter cover)
+      // 用首字母大写作为占位
+      &::before {
+        content: attr(data-initial);
+        flex: 0 0 200px;
+        width: 200px;
+        height: 140px;
+        border-radius: 8px;
+        background: linear-gradient(135deg,
+          color-mix(in srgb, var(--secondary, #284b63) 30%, var(--lightgray, #e5e5e5)),
+          color-mix(in srgb, var(--tertiary, #5b8dba) 30%, var(--lightgray, #e5e5e5))
+        );
+        display: flex; align-items: center; justify-content: center;
+        color: var(--light, #fff);
+        font-size: 2.5rem; font-weight: 700;
+        opacity: 0.9;
+        order: -1;
+      }
+
+      // meta 行: 时间
+      > .meta {
+        display: none !important;        // 旧版放左上, 改为放底部; 用 .desc 内 .meta
+      }
+
+      > .desc {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 0.5rem;
+
+        > h3 {
+          margin: 0 !important;
+          font-size: 1.15rem;
+          line-height: 1.4;
+          font-weight: 600;
+          background-color: transparent !important;
+
+          > a {
+            color: var(--dark, #2b2b2b);
+            text-decoration: none;
+            background-color: transparent !important;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            &:hover { color: var(--secondary, #284b63); }
+          }
+        }
+
+        // tags: 从 grid 列重排成胶囊条
+        + .tags, & + ul.tags {
+          margin: 0 !important; padding: 0 !important;
+          list-style: none;
+          display: flex; flex-wrap: wrap; gap: 0.4rem;
+
+          > li {
+            list-style: none;
+            margin: 0 !important;
+            > a.tag-link {
+              display: inline-block;
+              padding: 0.15rem 0.6rem !important;
+              font-size: 0.72rem !important;
+              background: color-mix(in srgb, var(--secondary, #284b63) 10%, var(--light, #fff)) !important;
+              color: var(--secondary, #284b63) !important;
+              border-radius: 999px;
+              text-decoration: none;
+              transition: background 0.15s ease;
+              &:hover {
+                background: color-mix(in srgb, var(--secondary, #284b63) 20%, var(--light, #fff));
+              }
+            }
+          }
+        }
+      }
+
+      // 把 meta 拼到 desc 底部: 注入新 <p class="meta"> via :after(略复杂), 改为对 .meta 重新布局
+      // 由于 folder-page 把 meta 单独放在 .section 内, 我们把它重排到底部
+      .meta {
+        margin: 0 !important;
+        font-size: 0.78rem;
+        color: var(--lightgray, #888);
+        opacity: 0.85 !important;
+        order: 99;
+      }
+
+      // 移动端堆叠
+      @media (max-width: 767px) {
+        flex-direction: column !important;
+        &::before {
+          flex: 0 0 auto !important;
+          width: 100% !important;
+          height: 180px !important;
+        }
+      }
+    }
+  }
+
+  @media all and (max-width: 600px) {
+    li.section-li > .section > .tags { display: flex !important; }
+  }
+}
+
+// 用 JS 注入 data-initial 给每个卡片(无法纯 CSS 完成)
+// 退而求其次: 用更强 CSS 把首字母定位到 ::before content, 通过属性选择器
+// 但 folder-page 不输出 data-initial, 这里采用纯静态方案:
+// 因为 CSS attr() 在 content 中需要元素本身有该属性, 我们用 JS 在客户端补
+// (在 base.scss 没有 JS 钩子; 改方案: 用 first-letter of title via attr(title))
+// fallback: 留空内容, 仅靠卡片背景色作占位
+
+// ============================================================================
+// 1. 顶部定位横幅 (lukefan.com 风格: 一句话专栏定位)
+// ============================================================================
+.site-banner {
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--secondary, #284b63) 8%, var(--light, #fff)),
+    color-mix(in srgb, var(--tertiary, #5b8dba) 5%, var(--light, #fff))
+  );
+  border: 1px solid color-mix(in srgb, var(--secondary, #284b63) 12%, transparent);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  margin: 1rem 0 2rem 0;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+
+  &__title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+    color: var(--dark, #2b2b2b);
+    letter-spacing: 0.02em;
+  }
+  &__subtitle {
+    font-size: 0.95rem;
+    color: var(--darkgray, #555);
+    margin: 0;
+    line-height: 1.5;
+  }
+  &__logo {
+    flex: 0 0 auto;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--secondary, #284b63);
+    color: var(--light, #fff);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700;
+  }
+  @media (max-width: 640px) {
+    flex-direction: column; text-align: center;
+    &__logo { width: 48px; height: 48px; font-size: 1.2rem; }
+  }
+}
+
+// ============================================================================
+// 2. 横向卡片流 (blog.lingzi.xin 风格: 封面+标题+摘要+meta)
+// ============================================================================
+.section-ul {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section-li {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.section {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 1rem;
+  background: var(--light, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--darkgray, #4e4e4e) 8%, transparent);
+  border-radius: 12px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--secondary, #284b63) 10%, transparent);
+    border-color: color-mix(in srgb, var(--secondary, #284b63) 25%, transparent);
+  }
+
+  // 封面图: 固定宽高比
+  .section-cover {
+    flex: 0 0 200px;
+    width: 200px;
+    height: 140px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--secondary, #284b63) 30%, var(--lightgray, #e5e5e5)),
+      color-mix(in srgb, var(--tertiary, #5b8dba) 30%, var(--lightgray, #e5e5e5))
+    );
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+
+    &__img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    &__placeholder {
+      color: var(--light, #fff);
+      font-size: 2.5rem;
+      font-weight: 700;
+      opacity: 0.85;
+      user-select: none;
+    }
+  }
+
+  // 文本区
+  .desc {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.4;
+    font-weight: 600;
+
+    a {
+      color: var(--dark, #2b2b2b);
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      &:hover { color: var(--secondary, #284b63); }
+    }
+  }
+
+  // 摘要 (新增 .excerpt 类)
+  .excerpt {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--darkgray, #555);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  // 标签胶囊
+  .tags {
+    margin: 0; padding: 0;
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+
+    .tag-link {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.72rem;
+      background: color-mix(in srgb, var(--secondary, #284b63) 10%, var(--light, #fff));
+      color: var(--secondary, #284b63);
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.15s ease;
+      &:hover {
+        background: color-mix(in srgb, var(--secondary, #284b63) 20%, var(--light, #fff));
+      }
+    }
+  }
+
+  // meta 行
+  .meta {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--lightgray, #888);
+    display: flex; gap: 0.75rem;
+  }
+
+  // <768px: 上下堆叠
+  @media (max-width: 767px) {
+    flex-direction: column;
+    gap: 0.75rem;
+    .section-cover {
+      flex: 0 0 auto;
+      width: 100%;
+      height: 180px;
+    }
+  }
+}
+
+// ============================================================================
+// 3. 暗色模式适配
+// ============================================================================
+:root[saved-theme="dark"] {
+  .section {
+    background: #1e1e2e;
+    border-color: color-mix(in srgb, #ffffff 8%, transparent);
+    .desc h3 a { color: #e4e4e7; &:hover { color: var(--tertiary, #8ec5ff); } }
+    .excerpt { color: #a1a1aa; }
+    .meta { color: #71717a; }
+    .tags .tag-link {
+      background: color-mix(in srgb, var(--tertiary, #5b8dba) 18%, #1e1e2e);
+      color: #a3c5e0;
+    }
+  }
+  .site-banner {
+    background: linear-gradient(135deg,
+      color-mix(in srgb, var(--secondary, #284b63) 25%, #1e1e2e),
+      color-mix(in srgb, var(--tertiary, #5b8dba) 15%, #1e1e2e)
+    );
+    border-color: color-mix(in srgb, var(--tertiary, #5b8dba) 25%, transparent);
+    &__title { color: #e4e4e7; }
+    &__subtitle { color: #a1a1aa; }
+  }
+}
