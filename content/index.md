@@ -3,11 +3,11 @@ title: 可可说
 description: 可可说——数字客厅
 ---
 
-<div class="site-banner">
-  <div class="site-banner__logo">K</div>
-  <div>
+<div class="site-banner site-banner--cover">
+  <img class="site-banner__cover" src="./static/images/dog-portrait.jpg" alt="手绘小狗" loading="eager" />
+  <div class="site-banner__body">
     <h1 class="site-banner__title">可可说</h1>
-    <p class="site-banner__subtitle">深度研究硬核投资、科技工程与 AI Agent —— 把每个判断都建在可复用的证据链上。</p>
+    <p class="site-banner__subtitle">请进，坐坐，看看 —— 把每个判断都建在可复用的证据链上。</p>
   </div>
 </div>
 

@@ -447,6 +447,37 @@ ul.section-ul {
   }
 }
 
+// 变体: 整图作为主视觉 (替代小 logo, 大图 + 文字)
+// 适用: 首页大图(手绘/插画) + 站点定位
+.site-banner--cover {
+  align-items: center;
+  gap: 1.75rem;
+  padding: 1.5rem;
+
+  .site-banner__cover {
+    flex: 0 0 240px;
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--secondary, #284b63) 14%, transparent);
+  }
+  .site-banner__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    text-align: center;
+    .site-banner__cover {
+      width: 200px; height: 200px;
+      flex-basis: 200px;
+    }
+  }
+}
+
 // ============================================================================
 // 2. 横向卡片流 (blog.lingzi.xin 风格: 封面+标题+摘要+meta)
 // ============================================================================
