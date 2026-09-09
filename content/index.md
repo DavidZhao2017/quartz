@@ -2,6 +2,15 @@
 title: AIKAI · 数字花园 | （www.aikailaw.com）
 description: AIKAI 的个人数字花园——价值投资、AI 前沿与认知成长的长期记录。
 ---
+
+<div class="site-banner">
+  <div class="site-banner__logo">A</div>
+  <div>
+    <h1 class="site-banner__title">AIKAI · 数字花园</h1>
+    <p class="site-banner__subtitle">深度研究硬核投资、科技工程与 AI Agent —— 把每个判断都建在可复用的证据链上。</p>
+  </div>
+</div>
+
 # 欢迎参观 AIKAI 的数字花园
 
 你好，我是 **AIKAI**。这座花园是我对 **价值投资、AI 前沿技术、认知成长** 三件事的持续耕耘之地——把散落的笔记、复盘与思考，做成长得以互联的长期积累。
