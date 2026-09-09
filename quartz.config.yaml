@@ -5,7 +5,7 @@
 # 注意：本文件中每条 plugins 条目的 source/options/order 与 default 保持一致，仅调整 layout 段。
 
 configuration:
-  pageTitle: AIKAILAW
+  pageTitle: AIKEKE
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
