@@ -1,6 +1,6 @@
 ---
 title: 可可说
-description: 可可说的个人数字花园——价值投资、AI 前沿与认知成长的长期记录。
+description: 可可说——数字客厅
 ---
 
 <div class="site-banner">
